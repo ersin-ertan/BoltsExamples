@@ -1,9 +1,11 @@
 package com.nullcognition.boltsexamples;// Created by ersin on 16/07/15
 
+import java.util.Locale;
+
 import bolts.Bolts;
 import bolts.Continuation;
 import bolts.Task;
-
+// out line of main classes
 public class MainClasses{
 	private void mainClaseses(){
 
@@ -63,5 +65,75 @@ public class MainClasses{
 		};
 
 
+	}
+
+	public Task<String> getStringAsync(){
+		return getIntAsync().continueWith(
+				new Continuation<Integer, String>(){
+					public String then(Task<Integer> task) throws Exception{
+						Integer number = task.getResult();
+						return String.format("%d", Locale.US, number);
+					}
+				}
+		);
+	}
+
+	public Task<Integer> getIntAsync(){
+		return Task.forResult(3);
+	}
+
+
+	public Task<String> succeedAsync(){
+		Task<String>.TaskCompletionSource successful = Task.create();
+
+		successful.setResult("The good result.");
+
+		return successful.getTask();
+	}
+
+	public Task<String> failAsync(){
+		Task<String>.TaskCompletionSource failed = Task.create();
+
+		failed.setError(new RuntimeException("An error message."));
+
+		return failed.getTask();
+	}
+
+
+	// the result of a task at the time it is created
+	Task<String> successful = Task.forResult("The good result.");
+	Task<String> failed = Task.forError(new RuntimeException("An error message."));
+
+	{
+//		// task in series
+//		ParseQuery<ParseObject> query = ParseQuery.getQuery("Comments");
+//		query.whereEqualTo("post", 123);
+//
+//		findAsync(query)
+//				.continueWithTask(new Continuation<List<ParseObject>, Task<Void>>(){
+//					                  public Task<Void> then(Task<List<ParseObject>> results) throws Exception{
+//
+//						                  Task<Void> task = Task.forResult(null);
+//
+//						                  for(final ParseObject result : results){
+//
+//							                  task = task.continueWithTask(new Continuation<Void, Task<Void>>(){
+//								                  public Task<Void> then(Task<Void> ignored) throws Exception{
+//
+//									                  return deleteAsync(result);
+//								                  }
+//							                  });
+//						                  }
+//						                  return task;
+//					                  }
+//				                  }
+//				)
+//				.continueWith(new Continuation<Void, Void>(){
+//					              public Void then(Task<Void> ignored) throws Exception{
+//						              // Every comment was deleted.
+//						              return null;
+//					              }
+//				              }
+//				);
 	}
 }
