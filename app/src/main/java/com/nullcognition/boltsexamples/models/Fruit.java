@@ -1,7 +1,7 @@
 package com.nullcognition.boltsexamples.models;// Created by ersin on 20/07/15
 
-public enum Apple implements Flavour{//, Comparable<Flavour>{
-GRANNY_SMITH, GOLDEN_DEL, GALA;
+public enum Fruit implements Flavour{//, Comparable<Flavour>{
+	PEACH, APPLE, PEAR;
 
 	// to total 1.00
 
@@ -26,7 +26,7 @@ GRANNY_SMITH, GOLDEN_DEL, GALA;
 		// during fermentation, bitterness increases(acid)
 	}
 
-//	@Override
+//	@Override // use absValue for calculating the difference
 //	public int compareTo(final Flavour another){
 //		if(another == null){return 99;}
 //		if(another.bitterness() >= this.bitterness() - 0.10 && another.bitterness() <= this.bitterness() + 0.10

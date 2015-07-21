@@ -20,10 +20,12 @@ public abstract class DrinkableLiquid<F extends Flavour> extends Liquid
 	@Override
 	public F getFlavour(){return this.flavour;}
 
+
+	// change this to use the value defined in Fruit for better resolution
 	@Override
 	public int compareTo(final Flavour another){
-		if(another instanceof Apple && this.flavour instanceof Apple){
-			if(((Apple) another).ordinal() == ((Apple) this.flavour).ordinal()){
+		if(another instanceof Fruit && this.flavour instanceof Fruit){
+			if(((Fruit) another).ordinal() == ((Fruit) this.flavour).ordinal()){
 				return 0; //  is equal
 			}
 		}

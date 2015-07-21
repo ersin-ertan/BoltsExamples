@@ -6,7 +6,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.nullcognition.boltsexamples.models.Apple;
+import com.nullcognition.boltsexamples.models.Fruit;
 import com.nullcognition.boltsexamples.models.Juice;
 import com.nullcognition.boltsexamples.models.Wine;
 
@@ -42,9 +42,9 @@ public class MainActivity extends AppCompatActivity{
 
 	// this should really have
 	private void continueWith(){
-		getAppleWine().onSuccess(new Continuation<Wine<Apple>, Void>(){
+		getWine().onSuccess(new Continuation<Wine<Fruit>, Void>(){
 
-			public Void then(Task<Wine<Apple>> task) throws Exception{
+			public Void then(Task<Wine<Fruit>> task) throws Exception{
 				if(task.isCancelled()){ return null; }
 				else if(task.isFaulted()){
 					Exception error = task.getError();
@@ -52,9 +52,9 @@ public class MainActivity extends AppCompatActivity{
 				}
 				else{
 					Log.e("logErr", "OnSuccess then task.getResult(), return wine.compare()");
-					Wine<Apple> appleWine = task.getResult();
+					Wine<Fruit> appleWine = task.getResult();
 					Log.e("logErr", "based on the results of the compare, respond");
-					if(appleWine.compareTo(Apple.GALA) == 0){
+					if(appleWine.compareTo(Fruit.APPLE) == 0){
 						Log.e("logErr", "onSuccess tastes GOOD, Give to everyone");
 					}
 					else{ Log.e("logErr", "onSuccess tastes BAD, spit it out"); }
@@ -64,19 +64,19 @@ public class MainActivity extends AppCompatActivity{
 		});
 	}
 
-	public Task<Wine<Apple>> getAppleWine(){
-		Log.e("logErr", "getAppleWine()");
-		return getAppleJuice().continueWith(
-				new Continuation<Juice<Apple>, Wine<Apple>>(){
+	public Task<Wine<Fruit>> getWine(){
+		Log.e("logErr", "getWine()");
+		return getJuice().continueWith(
+				new Continuation<Juice<Fruit>, Wine<Fruit>>(){
 					@Override
-					public Wine<Apple> then(final Task<Juice<Apple>> task) throws Exception{
+					public Wine<Fruit> then(final Task<Juice<Fruit>> task) throws Exception{
 						if(task.isCancelled()){ return null; }
 						else if(task.isFaulted()){
 							Exception error = task.getError();
 							throw error;
 						}
 						else{
-							Juice<Apple> appleJuice = task.getResult();
+							Juice<Fruit> appleJuice = task.getResult();
 							Log.e("logErr", "then task.getResult(), return appleJuice.ferment(), which is Wine");
 							return appleJuice.ferment();
 						}
@@ -85,10 +85,10 @@ public class MainActivity extends AppCompatActivity{
 		);
 	}
 
-	public Task<Juice<Apple>> getAppleJuice(){
-		Task<Juice<Apple>>.TaskCompletionSource successful = Task.create();
-		successful.setResult(new Juice<>(1,Apple.GOLDEN_DEL));
-		Log.e("logErr", "getAppleJuice(), return new Juice<>(new Apple())");
+	public Task<Juice<Fruit>> getJuice(){
+		Task<Juice<Fruit>>.TaskCompletionSource successful = Task.create();
+		successful.setResult(new Juice<>(1, Fruit.APPLE));
+		Log.e("logErr", "getJuice(), return new Juice<>(new Fruit())");
 		return successful.getTask();
 	}
 
