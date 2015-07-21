@@ -2,9 +2,9 @@ package com.nullcognition.boltsexamples;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.nullcognition.boltsexamples.models.Apple;
 import com.nullcognition.boltsexamples.models.Juice;
@@ -39,18 +39,33 @@ public class MainActivity extends AppCompatActivity{
 
 		return super.onOptionsItemSelected(item);
 	}
+
+	// this should really have
 	private void continueWith(){
 		getAppleWine().onSuccess(new Continuation<Wine<Apple>, Void>(){
+
 			public Void then(Task<Wine<Apple>> task) throws Exception{
-				Toast.makeText(MainActivity.this, "Give to everyone", Toast.LENGTH_SHORT).show();
+				if(task.isCancelled()){ return null; }
+				else if(task.isFaulted()){
+					Exception error = task.getError();
+					throw error;
+				}
+				else{
+					Log.e("logErr", "OnSuccess then task.getResult(), return wine.compare()");
+					Wine<Apple> appleWine = task.getResult();
+					Log.e("logErr", "based on the results of the compare, respond");
+					if(appleWine.compareTo(Apple.GALA) == 0){
+						Log.e("logErr", "onSuccess tastes GOOD, Give to everyone");
+					}
+					else{ Log.e("logErr", "onSuccess tastes BAD, spit it out"); }
+				}
 				return null;
 			}
 		});
 	}
 
-
 	public Task<Wine<Apple>> getAppleWine(){
-		Toast.makeText(MainActivity.this, "getAppleWine()", Toast.LENGTH_SHORT).show();
+		Log.e("logErr", "getAppleWine()");
 		return getAppleJuice().continueWith(
 				new Continuation<Juice<Apple>, Wine<Apple>>(){
 					@Override
@@ -62,7 +77,7 @@ public class MainActivity extends AppCompatActivity{
 						}
 						else{
 							Juice<Apple> appleJuice = task.getResult();
-							Toast.makeText(MainActivity.this, "then task.getResult(), return appleJuice.ferment(), which is Wine", Toast.LENGTH_SHORT).show();
+							Log.e("logErr", "then task.getResult(), return appleJuice.ferment(), which is Wine");
 							return appleJuice.ferment();
 						}
 					}
@@ -72,11 +87,10 @@ public class MainActivity extends AppCompatActivity{
 
 	public Task<Juice<Apple>> getAppleJuice(){
 		Task<Juice<Apple>>.TaskCompletionSource successful = Task.create();
-		successful.setResult(new Juice<>(1, Apple.GALA));
-		Toast.makeText(MainActivity.this, "getAppleJuice(), return new Juice<>(Apple.GALA)", Toast.LENGTH_SHORT).show();
+		successful.setResult(new Juice<>(1,Apple.GOLDEN_DEL));
+		Log.e("logErr", "getAppleJuice(), return new Juice<>(new Apple())");
 		return successful.getTask();
 	}
 
 
 }
-
